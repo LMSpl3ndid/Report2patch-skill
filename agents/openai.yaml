@@ -1,0 +1,4 @@
+interface:
+  display_name: "Report2Patch"
+  short_description: "Turn kernel memory bug reports into patch bundles"
+  default_prompt: "Use $report2patch to turn this Linux kernel memory bug report into a reviewed patch bundle."

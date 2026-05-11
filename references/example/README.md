@@ -17,6 +17,9 @@ fail inside `__add_disk()`.
 - QEMU SSH forward: `localhost:10022`
 - Guest root password: `root`
 
+When this workflow is used through `report2patch`, keep host-side logs under the bug-specific `kasan_artifact_dir`.
+For example, if `kasan_artifact_dir=/tmp/rbd_add_disk_uaf`, save pre-fix artifacts under `/tmp/rbd_add_disk_uaf/pre-fix` and post-fix artifacts under `/tmp/rbd_add_disk_uaf/post-fix`.
+
 ## Required kernel config
 
 The following options must be enabled in `/home/gzl/linux/.config`:
@@ -148,7 +151,16 @@ Important files:
 ```bash
 cd /home/gzl/linux/tools/testing/rbd_add_uaf
 ./host_collect_logs.sh \
-  --out-dir /tmp/rbd-add-uaf-artifacts \
+  --out-dir /tmp/rbd_add_disk_uaf/pre-fix \
+  --ssh-port 10022
+```
+
+After the fix is applied and the runtime workflow is re-run, collect the second run into the matching post-fix directory:
+
+```bash
+cd /home/gzl/linux/tools/testing/rbd_add_uaf
+./host_collect_logs.sh \
+  --out-dir /tmp/rbd_add_disk_uaf/post-fix \
   --ssh-port 10022
 ```
 

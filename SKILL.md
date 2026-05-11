@@ -27,6 +27,9 @@ Require these inputs before doing any patch work:
 - `patch_output_dir`
 - `kasan_artifact_dir`
 
+For the current workspace, prefer `patch_output_dir=/home/gzl/linux/patch`.
+Choose `kasan_artifact_dir` per bug so artifacts do not collide between reports, for example `/tmp/<function-or-bug-tag>`.
+
 Optional inputs:
 
 - `signed_off`

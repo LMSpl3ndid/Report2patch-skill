@@ -13,25 +13,26 @@ This skill expects the bug report itself to be provided in the conversation, the
 - `work_branch`
   Branch name reserved for the patch work. Create or reset it from the chosen base before editing.
 - `patch_output_dir`
-  Directory where `git format-patch` output and related mail artifacts will be stored.
+  Absolute host path where `git format-patch` output and related mail artifacts will be stored. In the current workspace, prefer `/home/gzl/linux/patch`.
 - `kasan_artifact_dir`
-  Directory where pre-fix and post-fix runtime logs will be saved. This directory also owns the derived failure note path `${kasan_artifact_dir}/failure-notes.md`.
+  Absolute host path where pre-fix and post-fix runtime logs will be saved. This directory also owns the derived failure note path `${kasan_artifact_dir}/failure-notes.md`. Name this directory per bug so runs do not collide, for example `/tmp/<function-or-bug-tag>`.
 
 ## Optional fields
 
 - `signed_off`
   Exact `Signed-off-by:` line to append to the commit message.
 - `repro_scripts_dir`
-  Directory containing repro helpers or host/guest scripts.
+  Absolute directory containing repro helpers or host/guest scripts. If this is not provided, prefer a matching directory under `kernel_tree` when it exists; otherwise fall back to skill-bundled examples.
 - `commit_template_path`
-  Optional file used as a local style or structure hint for the commit body.
+  Absolute file path used as a local style or structure hint for the commit body.
 - `extra_context_files`
-  Additional report files, traces, or notes that sharpen the diagnosis.
+  Additional absolute paths to report files, traces, or notes that sharpen the diagnosis.
 
 ## Environment prerequisites
 
 - `kernel_tree` must be a Linux kernel git repository.
 - `base_branch` must resolve in that repository.
+- Create `patch_output_dir` and `kasan_artifact_dir` with `mkdir -p` when they do not already exist.
 - `scripts/checkpatch.pl` and `scripts/get_maintainer.pl` should exist if final submission artifacts are expected.
 - A working build environment must exist if the skill is expected to claim `build-only` or `runtime-verified`.
 - A runtime environment such as QEMU or another targeted test rig is optional, but required for `runtime-verified`.
@@ -57,3 +58,6 @@ Stop before editing when any of these are true:
 - Keep the original report text intact in working notes.
 - Normalize derived KASAN excerpts later, not at intake time.
 - Prefer explicit paths over guesses. Do not infer `kernel_tree` or branch names from the report.
+- Treat `patch_output_dir`, `kasan_artifact_dir`, `repro_scripts_dir`, `commit_template_path`, and `extra_context_files` as host paths, not guest paths.
+- In the current workspace, use `/home/gzl/linux/patch` as the default `patch_output_dir` unless the user overrides it.
+- When runtime artifacts are needed, choose a bug-specific `kasan_artifact_dir` such as `/tmp/rbd_add_disk_uaf` and then store logs under its `pre-fix` and `post-fix` subdirectories.

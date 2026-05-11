@@ -133,6 +133,22 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
         for snippet in required_snippets:
             self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
 
+    def test_workspace_path_conventions_are_documented(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+        example_readme = (REPO_ROOT / "references" / "example" / "README.md").read_text(encoding="utf-8")
+
+        combined = skill_md + input_contract + guide + example_readme
+        required_snippets = [
+            "/home/gzl/linux/patch",
+            "/tmp/<function-or-bug-tag>",
+            "kasan_artifact_dir/pre-fix",
+            "kasan_artifact_dir/post-fix",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+
 
 if __name__ == "__main__":
     unittest.main()

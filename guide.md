@@ -19,6 +19,12 @@
 - 显式提供 `kasan_artifact_dir`
   这个目录除了放 pre-fix / post-fix 日志，也要承载派生文件 `${kasan_artifact_dir}/failure-notes.md`
 
+当前工作区的推荐约定：
+
+- `patch_output_dir=/home/gzl/linux/patch`
+- `kasan_artifact_dir` 按具体 bug 单独命名，例如 `/tmp/rbd_add_disk_uaf` 或 `/tmp/<function-or-bug-tag>`
+- `patch_output_dir` 和 `kasan_artifact_dir` 如果不存在，可以先 `mkdir -p`
+
 可选项：
 
 - `signed_off`

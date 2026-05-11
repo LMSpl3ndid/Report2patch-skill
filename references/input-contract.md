@@ -1,0 +1,59 @@
+# Input Contract
+
+This skill expects the bug report itself to be provided in the conversation, then combines it with explicit repository and artifact parameters.
+
+## Required fields
+
+- `bug_report_text`
+  The raw report text or a faithful copy of the relevant report excerpt.
+- `kernel_tree`
+  Absolute path to the Linux kernel git checkout that will be modified.
+- `base_branch`
+  Branch or ref that defines the baseline for rebasing and review.
+- `work_branch`
+  Branch name reserved for the patch work. Create or reset it from the chosen base before editing.
+- `patch_output_dir`
+  Directory where `git format-patch` output and related mail artifacts will be stored.
+- `kasan_artifact_dir`
+  Directory where pre-fix and post-fix runtime logs will be saved. This directory also owns the derived failure note path `${kasan_artifact_dir}/failure-notes.md`.
+
+## Optional fields
+
+- `signed_off`
+  Exact `Signed-off-by:` line to append to the commit message.
+- `repro_scripts_dir`
+  Directory containing repro helpers or host/guest scripts.
+- `commit_template_path`
+  Optional file used as a local style or structure hint for the commit body.
+- `extra_context_files`
+  Additional report files, traces, or notes that sharpen the diagnosis.
+
+## Environment prerequisites
+
+- `kernel_tree` must be a Linux kernel git repository.
+- `base_branch` must resolve in that repository.
+- `scripts/checkpatch.pl` and `scripts/get_maintainer.pl` should exist if final submission artifacts are expected.
+- A working build environment must exist if the skill is expected to claim `build-only` or `runtime-verified`.
+- A runtime environment such as QEMU or another targeted test rig is optional, but required for `runtime-verified`.
+
+## Failure note artifact
+
+- Use `${kasan_artifact_dir}/failure-notes.md` for blocking failures tied to environment setup, build execution, or runtime invocation.
+- Record concrete failures such as a broken KASAN setup, invalid repro command, or repository damage like an overwritten top-level `Makefile`.
+- Each entry must capture the step, cause, and context needed to explain what failed and why.
+- Append later failures to the same file instead of creating per-step note files.
+
+## Early-stop conditions
+
+Stop before editing when any of these are true:
+
+- The report is not a Linux kernel memory-management issue.
+- The report clearly needs multiple unrelated fixes.
+- `kernel_tree`, `base_branch`, or `work_branch` is missing.
+- The user only wants diagnosis and not a patch bundle.
+
+## Normalization rules
+
+- Keep the original report text intact in working notes.
+- Normalize derived KASAN excerpts later, not at intake time.
+- Prefer explicit paths over guesses. Do not infer `kernel_tree` or branch names from the report.

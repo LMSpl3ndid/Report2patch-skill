@@ -27,7 +27,7 @@ Require these inputs before doing any patch work:
 - `patch_output_dir`
 - `kasan_artifact_dir`
 
-For the current workspace, prefer `patch_output_dir=/home/gzl/linux/patch`.
+For the current workspace, prefer `patch_output_dir=$PWD/patch`.
 Choose `kasan_artifact_dir` per bug so artifacts do not collide between reports, for example `/tmp/<function-or-bug-tag>`.
 
 Optional inputs:
@@ -47,12 +47,19 @@ Follow this flow in order:
 1. Validate scope and inputs.
 2. Read the report and identify the failing path, affected subsystem, and likely fix shape.
 3. Run the environment preflight for the kernel tree, required scripts, build toolchain, and optional runtime environment.
-4. Sync or create `work_branch`. Never edit on `main` or `master`.
-5. Attempt a runtime reproduction when it is feasible and justified. Store pre-fix artifacts without overwriting older logs.
-6. Draft the fix plan and full commit message.
-7. Stop once for user review after the fix plan and commit draft are ready.
-8. After approval, implement the fix, build, and re-run runtime validation when feasible.
-9. Generate the commit, patch, checkpatch summary, maintainer list, and final status bundle.
+4. Before patch work, switch to `base_branch` first and update it with `git pull --ff-only`.
+5. For a new bug, create a new branch in `kernel_tree` named after the bug function and use that function name as `work_branch`. Never edit on `main` or `master`.
+Use that function name as `work_branch` for the whole fix workflow.
+6. Rebase `work_branch` onto the updated `base_branch` before editing.
+Always rebase `work_branch` onto the updated `base_branch` before making code changes.
+7. Attempt a runtime reproduction when it is feasible and justified. Store pre-fix artifacts without overwriting older logs.
+8. Draft the fix plan and full commit message.
+9. Show the user the code modification plan and commit draft.
+Always show the user the code modification plan and commit draft before continuing.
+10. The user must explicitly approve before any final commit or patch generation.
+11. After approval, implement the fix, build, and re-run runtime validation when feasible.
+12. Generate the commit, patch, checkpatch summary, maintainer list, and final status bundle.
+Do not generate the final commit or patch until that approval is given.
 
 When generating commit information from a mail-style example, start from `Subject:` and then generate the commit title and body from there.
 Do not include the leading mail headers such as `From:`, `Date:`, or the `From <sha> Mon Sep 17 00:00:00 2001` envelope line.

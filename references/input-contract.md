@@ -11,9 +11,10 @@ This skill expects the bug report itself to be provided in the conversation, the
 - `base_branch`
   Branch or ref that defines the baseline for rebasing and review.
 - `work_branch`
-  Branch name reserved for the patch work. Create or reset it from the chosen base before editing.
+  Branch name reserved for the patch work. For a new bug, create a new branch in `kernel_tree` named after the bug function and use that function name as `work_branch`. Create or reset it from the chosen base before editing.
+  Use that function name as `work_branch` consistently through patch generation and validation.
 - `patch_output_dir`
-  Absolute host path where `git format-patch` output and related mail artifacts will be stored. In the current workspace, prefer `/home/gzl/linux/patch`.
+  Absolute host path where `git format-patch` output and related mail artifacts will be stored. In the current workspace, prefer `$PWD/patch`.
 - `kasan_artifact_dir`
   Absolute host path where pre-fix and post-fix runtime logs will be saved. This directory also owns the derived failure note path `${kasan_artifact_dir}/failure-notes.md`. Name this directory per bug so runs do not collide, for example `/tmp/<function-or-bug-tag>`.
 
@@ -32,6 +33,7 @@ This skill expects the bug report itself to be provided in the conversation, the
 
 - `kernel_tree` must be a Linux kernel git repository.
 - `base_branch` must resolve in that repository.
+- Before creating or switching to `work_branch`, switch to `base_branch` first and update it with `git pull --ff-only`.
 - Create `patch_output_dir` and `kasan_artifact_dir` with `mkdir -p` when they do not already exist.
 - `scripts/checkpatch.pl` and `scripts/get_maintainer.pl` should exist if final submission artifacts are expected.
 - A working build environment must exist if the skill is expected to claim `build-only` or `runtime-verified`.
@@ -59,5 +61,7 @@ Stop before editing when any of these are true:
 - Normalize derived KASAN excerpts later, not at intake time.
 - Prefer explicit paths over guesses. Do not infer `kernel_tree` or branch names from the report.
 - Treat `patch_output_dir`, `kasan_artifact_dir`, `repro_scripts_dir`, `commit_template_path`, and `extra_context_files` as host paths, not guest paths.
-- In the current workspace, use `/home/gzl/linux/patch` as the default `patch_output_dir` unless the user overrides it.
+- In the current workspace, use `$PWD/patch` as the default `patch_output_dir` unless the user overrides it.
+- When handling a new bug, derive `work_branch` from the primary bug function identified in the report and create that branch in `kernel_tree` before editing.
+- Rebase `work_branch` onto the updated `base_branch` before making code changes.
 - When runtime artifacts are needed, choose a bug-specific `kasan_artifact_dir` such as `/tmp/rbd_add_disk_uaf` and then store logs under its `pre-fix` and `post-fix` subdirectories.

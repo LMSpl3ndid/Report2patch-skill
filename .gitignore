@@ -1,0 +1,18 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Editor settings
+.vscode/
+.idea/
+
+# macOS metadata
+.DS_Store

@@ -21,7 +21,7 @@
 
 当前工作区的推荐约定：
 
-- `patch_output_dir=/home/gzl/linux/patch`
+- `patch_output_dir=$PWD/patch`
 - `kasan_artifact_dir` 按具体 bug 单独命名，例如 `/tmp/rbd_add_disk_uaf` 或 `/tmp/<function-or-bug-tag>`
 - `patch_output_dir` 和 `kasan_artifact_dir` 如果不存在，可以先 `mkdir -p`
 
@@ -35,25 +35,30 @@
 ## 默认交互
 
 - 自动执行大部分流程
-- 只在“修改方案 + commit 草案”准备好后暂停一次
-- 用户回复继续后，再进入代码修改、patch 生成和收件人整理
+- 必须显示让用户审核代码修改方案 + commit 草案
+- 用户必须明确通过后，才能继续后续 commit 和 patch 的生成
 
 ## 主流程
 
 1. 解析 report，确认在 skill 适用范围内
 2. 检查环境和输入参数
-3. 同步 `work_branch`，不要直接在 `main/master` 上改
-4. 尽量做修复前动态复现，并把日志存到 `kasan_artifact_dir/pre-fix`
-5. 生成修改方案和 commit 草案，等待用户确认
-6. 落实修复并编译验证
-7. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`
+3. 先切到 `base_branch`
+4. 对 `base_branch` 执行 `git pull --ff-only`
+5. 处理新 bug 时，在 Linux 仓库里新建一个以 bug 函数命名的 branch，并把这个函数名作为 `work_branch`；不要直接在 `main/master` 上改
+6. 让 `work_branch` rebase 到更新后的 `base_branch`
+7. 尽量做修复前动态复现，并把日志存到 `kasan_artifact_dir/pre-fix`
+8. 生成修改方案和 commit 草案
+9. 显示让用户审核代码修改方案 + commit 草案
+10. 用户必须明确通过后，才能继续后续 commit 和 patch 的生成
+11. 落实修复并编译验证
+12. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`
    如果环境、编译或调用过程出现阻断性错误，把失败说明写到 `${kasan_artifact_dir}/failure-notes.md`
-8. 生成 commit
+13. 生成 commit
    commit 信息从 `Subject:` 开始生成，不要把前面的 `From:`、`Date:` 或 `From <sha> Mon Sep 17 00:00:00 2001` 这类邮件头一起带进去
-9. 生成 patch
-10. 跑 `scripts/checkpatch.pl`
-11. 跑 `scripts/get_maintainer.pl`
-12. 汇总 patch、验证结论和收件人信息
+14. 生成 patch
+15. 跑 `scripts/checkpatch.pl`
+16. 跑 `scripts/get_maintainer.pl`
+17. 汇总 patch、验证结论和收件人信息
 
 ## 降级规则
 

@@ -141,10 +141,54 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
 
         combined = skill_md + input_contract + guide + example_readme
         required_snippets = [
-            "/home/gzl/linux/patch",
+            "$PWD/patch",
             "/tmp/<function-or-bug-tag>",
             "kasan_artifact_dir/pre-fix",
             "kasan_artifact_dir/post-fix",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+
+    def test_new_bug_branch_is_named_after_bug_function(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+
+        combined = skill_md + input_contract + workflow + guide
+        required_snippets = [
+            "create a new branch in `kernel_tree`",
+            "named after the bug function",
+            "Use that function name as `work_branch`",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+
+    def test_base_branch_is_updated_before_work_branch_rebase(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+
+        combined = skill_md + input_contract + workflow + guide
+        required_snippets = [
+            "switch to `base_branch` first",
+            "`git pull --ff-only`",
+            "rebase `work_branch` onto the updated `base_branch`",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+
+    def test_user_must_approve_fix_plan_and_commit_before_commit_or_patch(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+
+        combined = skill_md + workflow + guide
+        required_snippets = [
+            "show the user the code modification plan and commit draft",
+            "must explicitly approve",
+            "Do not generate the final commit or patch until that approval is given",
         ]
         for snippet in required_snippets:
             self.assertIn(snippet, combined, f"docs must mention {snippet!r}")

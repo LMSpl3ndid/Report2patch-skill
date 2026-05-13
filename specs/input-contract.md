@@ -18,6 +18,8 @@ This skill expects the bug report itself to be provided in the conversation, the
 - `kasan_artifact_dir`
   Absolute host path where pre-fix and post-fix runtime logs will be saved. This directory also owns the derived failure note path `${kasan_artifact_dir}/failure-notes.md`. Name this directory per bug so runs do not collide, for example `/tmp/<function-or-bug-tag>`.
 
+Default values are centralized in `report2patch.yaml`. User-provided inputs override those defaults.
+
 ## Optional fields
 
 - `signed_off`
@@ -37,7 +39,10 @@ This skill expects the bug report itself to be provided in the conversation, the
 - Create `patch_output_dir` and `kasan_artifact_dir` with `mkdir -p` when they do not already exist.
 - `scripts/checkpatch.pl` and `scripts/get_maintainer.pl` should exist if final submission artifacts are expected.
 - A working build environment must exist if the skill is expected to claim `build-only` or `runtime-verified`.
+- When runtime validation is attempted, configure the correct Linux build options first.
 - A runtime environment such as QEMU or another targeted test rig is optional, but required for `runtime-verified`.
+- When QEMU is used for runtime validation, the guest must be reachable with password `root`.
+- When runtime validation is attempted, record the complete reproducible process to a Markdown file at `${kasan_artifact_dir}/repro-steps.md`.
 
 ## Failure note artifact
 
@@ -65,3 +70,4 @@ Stop before editing when any of these are true:
 - When handling a new bug, derive `work_branch` from the primary bug function identified in the report and create that branch in `kernel_tree` before editing.
 - Rebase `work_branch` onto the updated `base_branch` before making code changes.
 - When runtime artifacts are needed, choose a bug-specific `kasan_artifact_dir` such as `/tmp/rbd_add_disk_uaf` and then store logs under its `pre-fix` and `post-fix` subdirectories.
+- When runtime validation is attempted, save the reproducible host/guest flow in `${kasan_artifact_dir}/repro-steps.md`.

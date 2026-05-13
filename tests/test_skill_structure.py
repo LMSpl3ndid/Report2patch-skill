@@ -40,17 +40,17 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
 
     def test_reference_docs_cover_contracts_and_state_machine(self):
         expected_files = {
-            "references/input-contract.md": [
+            "specs/input-contract.md": [
                 "Required fields",
                 "Optional fields",
                 "Environment prerequisites",
             ],
-            "references/workflow-state-machine.md": [
+            "specs/workflow-state-machine.md": [
                 "Parse report",
                 "Wait for user confirmation",
                 "Assemble final bundle",
             ],
-            "references/output-bundle.md": [
+            "specs/output-bundle.md": [
                 "Runtime verification states",
                 "Patch bundle",
                 "Maintainer list",
@@ -65,15 +65,15 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
                 self.assertIn(snippet, content, f"{relative_path} must mention {snippet!r}")
 
     def test_runtime_status_semantics_match_current_plan(self):
-        output_bundle = (REPO_ROOT / "references" / "output-bundle.md").read_text(encoding="utf-8")
+        output_bundle = (REPO_ROOT / "specs" / "output-bundle.md").read_text(encoding="utf-8")
 
         self.assertIn("runtime reproduction or runtime re-validation was attempted and failed", output_bundle)
         self.assertIn("runtime validation was intentionally skipped or explicitly not recommended", output_bundle)
         self.assertIn("failure-notes.md", output_bundle)
 
     def test_failure_notes_are_defined_under_kasan_artifact_dir(self):
-        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
-        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "specs" / "input-contract.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
 
         required_snippets = [
@@ -85,7 +85,7 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
             self.assertIn(snippet, input_contract + workflow + guide, f"docs must mention {snippet!r}")
 
     def test_failure_note_template_exists_with_required_fields(self):
-        template = REPO_ROOT / "references" / "failure-notes-template.md"
+        template = REPO_ROOT / "templates" / "failure-notes-template.md"
         self.assertTrue(template.exists(), "failure note template must exist")
 
         content = template.read_text(encoding="utf-8")
@@ -113,6 +113,8 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
             "`SKILL.md`",
             "`agents/openai.yaml`",
             "`guide.md`",
+            "`specs/input-contract.md`",
+            "`templates/failure-notes-template.md`",
             "`references/commit_example.txt`",
         ]
         for snippet in required_snippets:
@@ -120,7 +122,7 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
 
     def test_commit_generation_starts_from_subject(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        output_bundle = (REPO_ROOT / "references" / "output-bundle.md").read_text(encoding="utf-8")
+        output_bundle = (REPO_ROOT / "specs" / "output-bundle.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
 
         required_snippets = [
@@ -135,7 +137,7 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
 
     def test_workspace_path_conventions_are_documented(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "specs" / "input-contract.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
         example_readme = (REPO_ROOT / "references" / "example" / "README.md").read_text(encoding="utf-8")
 
@@ -151,44 +153,91 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
 
     def test_new_bug_branch_is_named_after_bug_function(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
-        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "specs" / "input-contract.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
 
         combined = skill_md + input_contract + workflow + guide
         required_snippets = [
             "create a new branch in `kernel_tree`",
             "named after the bug function",
-            "Use that function name as `work_branch`",
+            "use that function name as `work_branch`",
         ]
         for snippet in required_snippets:
             self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
 
     def test_base_branch_is_updated_before_work_branch_rebase(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        input_contract = (REPO_ROOT / "references" / "input-contract.md").read_text(encoding="utf-8")
-        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "specs" / "input-contract.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
 
-        combined = skill_md + input_contract + workflow + guide
+        combined = (skill_md + input_contract + workflow + guide).lower()
         required_snippets = [
             "switch to `base_branch` first",
             "`git pull --ff-only`",
             "rebase `work_branch` onto the updated `base_branch`",
         ]
         for snippet in required_snippets:
-            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+            self.assertIn(snippet.lower(), combined, f"docs must mention {snippet!r}")
 
     def test_user_must_approve_fix_plan_and_commit_before_commit_or_patch(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        workflow = (REPO_ROOT / "references" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
 
-        combined = skill_md + workflow + guide
+        combined = (skill_md + workflow + guide).lower()
         required_snippets = [
-            "show the user the code modification plan and commit draft",
+            "Show the user the code modification plan and commit draft",
             "must explicitly approve",
-            "Do not generate the final commit or patch until that approval is given",
+            "do not generate the final commit or patch until that approval is given",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet.lower(), combined, f"docs must mention {snippet!r}")
+
+    def test_runtime_repro_requires_qemu_kasan_and_markdown_record(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "specs" / "input-contract.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+
+        combined = skill_md + input_contract + workflow + guide
+        required_snippets = [
+            "configure the correct Linux build options",
+            "run in QEMU",
+            "password `root`",
+            "record the complete reproducible process to a Markdown file",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+
+    def test_config_file_exists_with_runtime_and_path_defaults(self):
+        config_path = REPO_ROOT / "report2patch.yaml"
+        self.assertTrue(config_path.exists(), "report2patch.yaml must exist")
+
+        content = config_path.read_text(encoding="utf-8")
+        required_snippets = [
+            "patch_output_dir: \"$PWD/patch\"",
+            "qemu_root_password: \"root\"",
+            "require_kasan_report: true",
+            "repro_markdown_path: \"${kasan_artifact_dir}/repro-steps.md\"",
+            "require_commit_self_check: true",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, content, f"config must mention {snippet!r}")
+
+    def test_commit_self_check_happens_before_patch_generation(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        output_bundle = (REPO_ROOT / "specs" / "output-bundle.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+
+        combined = skill_md + workflow + output_bundle + guide
+        required_snippets = [
+            "self-check the commit content against common Linux patch submission conventions",
+            "before generating the patch",
+            "Subject line style",
+            "Signed-off-by",
         ]
         for snippet in required_snippets:
             self.assertIn(snippet, combined, f"docs must mention {snippet!r}")

@@ -23,6 +23,7 @@ The final bundle should include:
 - A short validation summary with the runtime status label.
 - A short `checkpatch.pl` result summary.
 - Paths to pre-fix and post-fix artifacts when they exist.
+- The `${kasan_artifact_dir}/repro-steps.md` path when runtime validation was attempted.
 - The `${kasan_artifact_dir}/failure-notes.md` path when blocking failures were recorded.
 
 The commit message should cover:
@@ -36,6 +37,14 @@ The commit message should cover:
 - Any `Fixes:` tag that can be justified.
 - Whether `Cc: stable@vger.kernel.org` is recommended.
 - The chosen `Signed-off-by:` line when one was provided.
+
+Before generating the patch, self-check the commit content against common Linux patch submission conventions:
+
+- Subject line style is patch-like and subsystem-scoped
+- Leading mail headers are excluded
+- The body explains the bug cause and fix rationale
+- `Signed-off-by:` is present when provided or required by workflow
+- `Fixes:` and `Cc: stable@vger.kernel.org` are included only when justified
 
 ## KASAN excerpt rules
 

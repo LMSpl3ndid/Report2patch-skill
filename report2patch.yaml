@@ -1,0 +1,27 @@
+version: 1
+
+paths:
+  patch_output_dir: "$PWD/patch"
+  kasan_artifact_dir: "/tmp/<function-or-bug-tag>"
+  repro_markdown_path: "${kasan_artifact_dir}/repro-steps.md"
+
+git:
+  base_branch: "master"
+  update_base_branch: true
+  update_command: "git pull --ff-only"
+  work_branch_strategy: "bug_function_name"
+
+runtime:
+  require_configured_linux_build_options: true
+  require_qemu: true
+  qemu_root_password: "root"
+  require_kasan_report: true
+  require_repro_markdown: true
+  repro_markdown_format: "markdown"
+
+submission:
+  require_user_approval_before_commit_or_patch: true
+  require_commit_self_check: true
+  commit_message_starts_from: "Subject:"
+  require_checkpatch: true
+  require_get_maintainer: true

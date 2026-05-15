@@ -4,6 +4,7 @@ paths:
   patch_output_dir: "$PWD/patch"
   kasan_artifact_dir: "/tmp/<function-or-bug-tag>"
   repro_markdown_path: "${kasan_artifact_dir}/repro-steps.md"
+  commit_draft_path: "${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md"
 
 git:
   base_branch: "master"
@@ -25,3 +26,4 @@ submission:
   commit_message_starts_from: "Subject:"
   require_checkpatch: true
   require_get_maintainer: true
+  require_commit_draft_file: true

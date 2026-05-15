@@ -19,6 +19,7 @@ Do not use a successful final runtime status when the build itself failed.
 The final bundle should include:
 
 - Final commit message text.
+- The `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md` path.
 - The `git format-patch` output path or paths.
 - A short validation summary with the runtime status label.
 - A short `checkpatch.pl` result summary.
@@ -37,6 +38,14 @@ The commit message should cover:
 - Any `Fixes:` tag that can be justified.
 - Whether `Cc: stable@vger.kernel.org` is recommended.
 - The chosen `Signed-off-by:` line when one was provided.
+- The recipient list for the bug, with one `To:` recipient and all remaining recipients under `Cc:`.
+
+The bug-specific `commit.md` draft should include:
+
+- Subject
+- Description modeled after `references/commit_example.txt`
+- Configurable `Signed-off-by`
+- Recipient list for the bug
 
 Before generating the patch, self-check the commit content against common Linux patch submission conventions:
 

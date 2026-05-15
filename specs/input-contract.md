@@ -18,6 +18,11 @@ This skill expects the bug report itself to be provided in the conversation, the
 - `kasan_artifact_dir`
   Absolute host path where pre-fix and post-fix runtime logs will be saved. This directory also owns the derived failure note path `${kasan_artifact_dir}/failure-notes.md`. Name this directory per bug so runs do not collide, for example `/tmp/<function-or-bug-tag>`.
 
+Derived output paths:
+
+- `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`
+  Bug-specific commit draft path. `work_branch` is the bug-function name for new bugs, so this path changes per bug.
+
 Default values are centralized in `report2patch.yaml`. User-provided inputs override those defaults.
 
 ## Optional fields
@@ -37,6 +42,7 @@ Default values are centralized in `report2patch.yaml`. User-provided inputs over
 - `base_branch` must resolve in that repository.
 - Before creating or switching to `work_branch`, switch to `base_branch` first and update it with `git pull --ff-only`.
 - Create `patch_output_dir` and `kasan_artifact_dir` with `mkdir -p` when they do not already exist.
+- Create `${kernel_tree}/tools/testing/report2patch/${work_branch}` when it does not already exist.
 - `scripts/checkpatch.pl` and `scripts/get_maintainer.pl` should exist if final submission artifacts are expected.
 - A working build environment must exist if the skill is expected to claim `build-only` or `runtime-verified`.
 - When runtime validation is attempted, configure the correct Linux build options first.
@@ -71,3 +77,4 @@ Stop before editing when any of these are true:
 - Rebase `work_branch` onto the updated `base_branch` before making code changes.
 - When runtime artifacts are needed, choose a bug-specific `kasan_artifact_dir` such as `/tmp/rbd_add_disk_uaf` and then store logs under its `pre-fix` and `post-fix` subdirectories.
 - When runtime validation is attempted, save the reproducible host/guest flow in `${kasan_artifact_dir}/repro-steps.md`.
+- Write the commit draft to `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`.

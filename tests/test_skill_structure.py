@@ -242,6 +242,26 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
         for snippet in required_snippets:
             self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
 
+    def test_commit_draft_is_written_to_bug_specific_commit_md(self):
+        skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        input_contract = (REPO_ROOT / "specs" / "input-contract.md").read_text(encoding="utf-8")
+        output_bundle = (REPO_ROOT / "specs" / "output-bundle.md").read_text(encoding="utf-8")
+        workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
+        guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+        config = (REPO_ROOT / "report2patch.yaml").read_text(encoding="utf-8")
+
+        combined = skill_md + input_contract + output_bundle + workflow + guide + config
+        required_snippets = [
+            "tools/testing/report2patch/${work_branch}/commit.md",
+            "write the commit draft",
+            "Subject",
+            "references/commit_example.txt",
+            "Signed-off-by",
+            "recipient list",
+        ]
+        for snippet in required_snippets:
+            self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
+
 
 if __name__ == "__main__":
     unittest.main()

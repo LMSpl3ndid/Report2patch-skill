@@ -20,6 +20,8 @@ This repository packages one Codex skill plus supporting spec, template, and ref
   Contract for final output status labels and required artifacts.
 - `templates/failure-notes-template.md`
   Template for the runtime/build/environment failure record written to `${kasan_artifact_dir}/failure-notes.md`.
+- `templates/commit-draft-template.md`
+  Template for the bug-specific commit draft written to `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`.
 - `references/commit_example.txt`
   Commit-message style reference used as an output example for the generated patch email/commit text.
 - `references/example/`
@@ -45,7 +47,9 @@ The skill does not rely on one single prompt file. Its effective prompt is assem
    Supplies the output semantics, especially the meaning of `runtime-verified`, `build-only`, and `not-runtime-verified`.
 7. `templates/failure-notes-template.md`
    Supplies the expected shape of `${kasan_artifact_dir}/failure-notes.md` so error records stay consistent.
-8. `references/commit_example.txt`
+8. `templates/commit-draft-template.md`
+   Supplies the expected shape of the bug-specific commit draft file.
+9. `references/commit_example.txt`
    Supplies an example output style for commit text. It is a style reference, not a rule source.
 
 ## Prompt Boundaries
@@ -62,9 +66,10 @@ The skill does not rely on one single prompt file. Its effective prompt is assem
 2. The skill reads the contract and validates the environment.
 3. Runtime artifacts are written under `kasan_artifact_dir/pre-fix` and `kasan_artifact_dir/post-fix`.
 4. The complete reproducible runtime flow is written to `${kasan_artifact_dir}/repro-steps.md`.
-5. Blocking environment/build/runtime invocation problems are written to `${kasan_artifact_dir}/failure-notes.md`.
-6. Patch artifacts are written under `patch_output_dir`.
-7. Final status and maintainer routing are assembled from the state machine and output-bundle contract.
+5. The bug-specific commit draft is written to `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`.
+6. Blocking environment/build/runtime invocation problems are written to `${kasan_artifact_dir}/failure-notes.md`.
+7. Patch artifacts are written under `patch_output_dir`.
+8. Final status and maintainer routing are assembled from the state machine and output-bundle contract.
 
 ## Current Constraints
 

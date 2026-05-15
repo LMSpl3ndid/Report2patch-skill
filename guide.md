@@ -25,6 +25,7 @@
 - `kasan_artifact_dir` 按具体 bug 单独命名，例如 `/tmp/rbd_add_disk_uaf` 或 `/tmp/<function-or-bug-tag>`
 - `patch_output_dir` 和 `kasan_artifact_dir` 如果不存在，可以先 `mkdir -p`
 - 默认值集中写在 `report2patch.yaml`
+- commit 草稿写入 `tools/testing/report2patch/bug函数名称/commit.md`
 
 可选项：
 
@@ -49,19 +50,20 @@
 6. 让 `work_branch` rebase 到更新后的 `base_branch`
 7. 进行动态测试时，请你通过配置正确的 Linux 编译选项，并在 QEMU（密码为 `root`）上运行得到 KASAN 的报告，同时记录完整可复现的流程到 `${kasan_artifact_dir}/repro-steps.md`
 8. 保存修复前动态复现日志到 `kasan_artifact_dir/pre-fix`
-9. 生成修改方案和 commit 草案
-10. 显示让用户审核代码修改方案 + commit 草案
-11. 用户必须明确通过后，才能继续后续 commit 和 patch 的生成
-12. 落实修复并编译验证
-13. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`，并把复现后的完整流程继续写回 `${kasan_artifact_dir}/repro-steps.md`
+9. 生成修改方案和 commit 草案，并写入 `tools/testing/report2patch/bug函数名称/commit.md`
+10. `commit.md` 里要包括：主题、参考 `references/commit_example.txt` 的描述、可自定义的 `signed off`，以及该 bug 要抄送的对象
+11. 显示让用户审核代码修改方案 + commit 草案
+12. 用户必须明确通过后，才能继续后续 commit 和 patch 的生成
+13. 落实修复并编译验证
+14. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`，并把复现后的完整流程继续写回 `${kasan_artifact_dir}/repro-steps.md`
    如果环境、编译或调用过程出现阻断性错误，把失败说明写到 `${kasan_artifact_dir}/failure-notes.md`
-14. 生成 commit
+15. 生成 commit
    commit 信息从 `Subject:` 开始生成，不要把前面的 `From:`、`Date:` 或 `From <sha> Mon Sep 17 00:00:00 2001` 这类邮件头一起带进去
-15. 对 commit 内容做一次自检，检查是否符合 Linux patch 常见提交规范
-16. 自检通过后再生成 patch
-17. 跑 `scripts/checkpatch.pl`
-18. 跑 `scripts/get_maintainer.pl`
-19. 汇总 patch、验证结论和收件人信息
+16. 对 commit 内容做一次自检，检查是否符合 Linux patch 常见提交规范
+17. 自检通过后再生成 patch
+18. 跑 `scripts/checkpatch.pl`
+19. 跑 `scripts/get_maintainer.pl`
+20. 汇总 patch、验证结论和收件人信息
 
 ## 降级规则
 
@@ -74,6 +76,7 @@
 ## 最终产物
 
 - commit message
+- `tools/testing/report2patch/bug函数名称/commit.md` 路径
 - `git format-patch` 输出路径
 - `checkpatch.pl` 结果摘要
 - `get_maintainer.pl` 收件人列表
@@ -87,6 +90,7 @@
 - `specs/input-contract.md`
 - `specs/workflow-state-machine.md`
 - `specs/output-bundle.md`
+- `templates/commit-draft-template.md`
 - `templates/failure-notes-template.md`
 - `references/commit_example.txt`
 - `references/example/README.md`

@@ -40,6 +40,7 @@ Optional inputs:
 
 Read [specs/input-contract.md](specs/input-contract.md) for field definitions, preflight checks, and early-stop conditions.
 Use [templates/failure-notes-template.md](templates/failure-notes-template.md) when writing `${kasan_artifact_dir}/failure-notes.md`.
+Use [templates/commit-draft-template.md](templates/commit-draft-template.md) when writing `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`.
 
 ## Workflow
 
@@ -52,13 +53,14 @@ Follow this flow in order:
 5. For a new bug, create a new branch in `kernel_tree` named after the bug function and use that function name as `work_branch`. Never edit on `main` or `master`.
 6. Rebase `work_branch` onto the updated `base_branch` before editing.
 7. When runtime validation is attempted, configure the correct Linux build options, run in QEMU with password `root` to obtain a KASAN report, and record the complete reproducible process to a Markdown file at `${kasan_artifact_dir}/repro-steps.md`. Store pre-fix artifacts without overwriting older logs.
-8. Draft the fix plan and full commit message.
-9. Show the user the code modification plan and commit draft.
-10. The user must explicitly approve before any final commit or patch generation.
-11. After approval, implement the fix, build, and re-run runtime validation when feasible.
-12. Generate the commit information.
-13. Self-check the commit content against common Linux patch submission conventions before generating the patch.
-14. Generate the patch, checkpatch summary, maintainer list, and final status bundle.
+8. Draft the fix plan and full commit message, and write the commit draft to `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`.
+9. The commit draft file must include the Subject, a description modeled after `references/commit_example.txt`, the configurable `Signed-off-by`, and the recipient list for the bug.
+10. Show the user the code modification plan and commit draft.
+11. The user must explicitly approve before any final commit or patch generation.
+12. After approval, implement the fix, build, and re-run runtime validation when feasible.
+13. Generate the commit information.
+14. Self-check the commit content against common Linux patch submission conventions before generating the patch.
+15. Generate the patch, checkpatch summary, maintainer list, and final status bundle.
 
 When generating commit information from a mail-style example, start from `Subject:` and then generate the commit title and body from there.
 Do not include the leading mail headers such as `From:`, `Date:`, or the `From <sha> Mon Sep 17 00:00:00 2001` envelope line.
@@ -88,6 +90,7 @@ Read [specs/output-bundle.md](specs/output-bundle.md) for the exact downgrade ru
 The successful output bundle must include:
 
 - The final commit message.
+- The `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md` path.
 - The generated `git format-patch` path.
 - A validation summary with one of the approved runtime status labels.
 - The `checkpatch.pl` result summary.
@@ -97,4 +100,4 @@ The successful output bundle must include:
 - The `${kasan_artifact_dir}/failure-notes.md` path when blocking failures were recorded.
 
 Use [references/commit_example.txt](references/commit_example.txt) as a style reference, but start from `Subject:` when generating commit information and skip the leading mail headers.
-Use [templates/failure-notes-template.md](templates/failure-notes-template.md) for blocking failure notes, and use the scripts under [references/example](references/example) when a real runtime workflow is needed.
+Use [templates/commit-draft-template.md](templates/commit-draft-template.md) for the bug-specific commit draft, use [templates/failure-notes-template.md](templates/failure-notes-template.md) for blocking failure notes, and use the scripts under [references/example](references/example) when a real runtime workflow is needed.

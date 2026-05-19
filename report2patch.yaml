@@ -21,7 +21,6 @@ runtime:
   repro_markdown_format: "markdown"
 
 submission:
-  require_user_approval_before_commit_or_patch: true
   require_commit_self_check: true
   commit_message_starts_from: "Subject:"
   require_checkpatch: true

@@ -55,12 +55,10 @@ Follow this flow in order:
 7. When runtime validation is attempted, configure the correct Linux build options, run in QEMU with password `root` to obtain a KASAN report, and record the complete reproducible process to a Markdown file at `${kasan_artifact_dir}/repro-steps.md`. Store pre-fix artifacts without overwriting older logs.
 8. Draft the fix plan and full commit message, and write the commit draft to `${kernel_tree}/tools/testing/report2patch/${work_branch}/commit.md`.
 9. The commit draft file must include the Subject, a description modeled after `references/commit_example.txt`, the configurable `Signed-off-by`, and the recipient list for the bug.
-10. Show the user the code modification plan and commit draft.
-11. The user must explicitly approve before any final commit or patch generation.
-12. After approval, implement the fix, build, and re-run runtime validation when feasible.
-13. Generate the commit information.
-14. Self-check the commit content against common Linux patch submission conventions before generating the patch.
-15. Generate the patch, checkpatch summary, maintainer list, and final status bundle.
+10. Implement the fix, build, and re-run runtime validation when feasible.
+11. Generate the commit information.
+12. Self-check the commit content against common Linux patch submission conventions before generating the patch.
+13. Generate the patch, checkpatch summary, maintainer list, and final status bundle.
 
 When generating commit information from a mail-style example, start from `Subject:` and then generate the commit title and body from there.
 Do not include the leading mail headers such as `From:`, `Date:`, or the `From <sha> Mon Sep 17 00:00:00 2001` envelope line.

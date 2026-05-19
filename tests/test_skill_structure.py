@@ -47,7 +47,7 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
             ],
             "specs/workflow-state-machine.md": [
                 "Parse report",
-                "Wait for user confirmation",
+                "Generate commit",
                 "Assemble final bundle",
             ],
             "specs/output-bundle.md": [
@@ -181,19 +181,21 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
         for snippet in required_snippets:
             self.assertIn(snippet.lower(), combined, f"docs must mention {snippet!r}")
 
-    def test_user_must_approve_fix_plan_and_commit_before_commit_or_patch(self):
+    def test_commit_draft_review_is_not_a_required_gate(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
         workflow = (REPO_ROOT / "specs" / "workflow-state-machine.md").read_text(encoding="utf-8")
         guide = (REPO_ROOT / "guide.md").read_text(encoding="utf-8")
+        config = (REPO_ROOT / "report2patch.yaml").read_text(encoding="utf-8")
 
-        combined = (skill_md + workflow + guide).lower()
-        required_snippets = [
-            "Show the user the code modification plan and commit draft",
+        combined = (skill_md + workflow + guide + config).lower()
+        forbidden_snippets = [
+            "wait for user confirmation",
             "must explicitly approve",
             "do not generate the final commit or patch until that approval is given",
+            "require_user_approval_before_commit_or_patch",
         ]
-        for snippet in required_snippets:
-            self.assertIn(snippet.lower(), combined, f"docs must mention {snippet!r}")
+        for snippet in forbidden_snippets:
+            self.assertNotIn(snippet.lower(), combined, f"docs must not mention {snippet!r}")
 
     def test_runtime_repro_requires_qemu_kasan_and_markdown_record(self):
         skill_md = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")

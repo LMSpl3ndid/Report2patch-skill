@@ -37,8 +37,7 @@
 ## 默认交互
 
 - 自动执行大部分流程
-- 必须显示让用户审核代码修改方案 + commit 草案
-- 用户必须明确通过后，才能继续后续 commit 和 patch 的生成
+- 默认不设置强制用户确认环节
 
 ## 主流程
 
@@ -52,18 +51,16 @@
 8. 保存修复前动态复现日志到 `kasan_artifact_dir/pre-fix`
 9. 生成修改方案和 commit 草案，并写入 `tools/testing/report2patch/bug函数名称/commit.md`
 10. `commit.md` 里要包括：主题、参考 `references/commit_example.txt` 的描述、可自定义的 `signed off`，以及该 bug 要抄送的对象
-11. 显示让用户审核代码修改方案 + commit 草案
-12. 用户必须明确通过后，才能继续后续 commit 和 patch 的生成
-13. 落实修复并编译验证
-14. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`，并把复现后的完整流程继续写回 `${kasan_artifact_dir}/repro-steps.md`
+11. 落实修复并编译验证
+12. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`，并把复现后的完整流程继续写回 `${kasan_artifact_dir}/repro-steps.md`
    如果环境、编译或调用过程出现阻断性错误，把失败说明写到 `${kasan_artifact_dir}/failure-notes.md`
-15. 生成 commit
+13. 生成 commit
    commit 信息从 `Subject:` 开始生成，不要把前面的 `From:`、`Date:` 或 `From <sha> Mon Sep 17 00:00:00 2001` 这类邮件头一起带进去
-16. 对 commit 内容做一次自检，检查是否符合 Linux patch 常见提交规范
-17. 自检通过后再生成 patch
-18. 跑 `scripts/checkpatch.pl`
-19. 跑 `scripts/get_maintainer.pl`
-20. 汇总 patch、验证结论和收件人信息
+14. 对 commit 内容做一次自检，检查是否符合 Linux patch 常见提交规范
+15. 自检通过后再生成 patch
+16. 跑 `scripts/checkpatch.pl`
+17. 跑 `scripts/get_maintainer.pl`
+18. 汇总 patch、验证结论和收件人信息
 
 ## 降级规则
 

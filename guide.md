@@ -50,7 +50,7 @@
 7. 进行动态测试时，请你通过配置正确的 Linux 编译选项，并在 QEMU（密码为 `root`）上运行得到 KASAN 的报告，同时记录完整可复现的流程到 `${kasan_artifact_dir}/repro-steps.md`
 8. 保存修复前动态复现日志到 `kasan_artifact_dir/pre-fix`
 9. 生成修改方案和 commit 草案，并写入 `tools/testing/report2patch/bug函数名称/commit.md`
-10. `commit.md` 里要包括：主题、参考 `references/commit_example.txt` 的描述、可自定义的 `signed off`，以及该 bug 要抄送的对象
+10. `commit.md` 里要包括：主题、参考 `references/commit_example.txt` 的描述、可自定义的 `signed off`，以及形如 `git send-email patch/... --to=... --cc=...` 的发送命令
 11. 落实修复并编译验证
 12. 尽量做修复后动态复现，日志存到 `kasan_artifact_dir/post-fix`，并把复现后的完整流程继续写回 `${kasan_artifact_dir}/repro-steps.md`
    如果环境、编译或调用过程出现阻断性错误，把失败说明写到 `${kasan_artifact_dir}/failure-notes.md`

@@ -38,14 +38,14 @@ The commit message should cover:
 - Any `Fixes:` tag that can be justified.
 - Whether `Cc: stable@vger.kernel.org` is recommended.
 - The chosen `Signed-off-by:` line when one was provided.
-- The recipient list for the bug, with one `To:` recipient and all remaining recipients under `Cc:`.
+- A `git send-email` command for the bug with one `--to=` recipient and all remaining recipients under `--cc=`.
 
 The bug-specific `commit.md` draft should include:
 
 - Subject
 - Description modeled after `references/commit_example.txt`
 - Configurable `Signed-off-by`
-- Recipient list for the bug
+- A `git send-email patch/... --to=... --cc=...` command
 
 Before generating the patch, self-check the commit content against common Linux patch submission conventions:
 

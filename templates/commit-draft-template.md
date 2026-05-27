@@ -4,7 +4,6 @@ Use this template when writing `${kernel_tree}/tools/testing/report2patch/${work
 
 ## Required Sections
 
-```md
 # Subject
 
 <subsystem>: <short summary>
@@ -17,18 +16,18 @@ Use this template when writing `${kernel_tree}/tools/testing/report2patch/${work
 
 <Exact Signed-off-by: line, if provided or required>
 
-# Recipients
+# Send Email
 
-To:
-- <primary recipient chosen from get_maintainer output>
-
-Cc:
-- <all remaining recipients from get_maintainer output>
+```bash
+git send-email patch/<patch-file>.patch \
+  --to=<primary recipient chosen from get_maintainer output> \
+  --cc=<remaining recipient 1> \
+  --cc=<remaining recipient 2>
 ```
 
 ## Writing Rules
 
 - Start the draft from the commit `Subject` line, not from mail envelope headers.
 - Model the description section after `references/commit_example.txt`.
-- Keep only one primary `To:` recipient.
-- Put every other recipient under `Cc:`.
+- Keep only one primary `--to=` recipient.
+- Put every other recipient under `--cc=`.

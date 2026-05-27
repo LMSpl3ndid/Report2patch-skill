@@ -23,6 +23,7 @@ runtime:
 submission:
   require_commit_self_check: true
   commit_message_starts_from: "Subject:"
+  require_send_email_command_format: true
   require_checkpatch: true
   require_get_maintainer: true
   require_commit_draft_file: true

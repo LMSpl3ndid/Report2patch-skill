@@ -259,7 +259,9 @@ class Report2PatchSkillStructureTests(unittest.TestCase):
             "Subject",
             "references/commit_example.txt",
             "Signed-off-by",
-            "recipient list",
+            "git send-email",
+            "--to=",
+            "--cc=",
         ]
         for snippet in required_snippets:
             self.assertIn(snippet, combined, f"docs must mention {snippet!r}")
